@@ -1,5 +1,5 @@
 <template>
-    <div style="width: 600px">
+    <div class="waveform-synthesizer">
         <!-- タイトル -->
         <h3>波形合成するやつ</h3>
         <!-- 音律選択のラジオボタン -->
@@ -172,6 +172,20 @@ export default defineComponent({
 </script>
 
 <style>
+.waveform-synthesizer {
+    width: 600px;
+}
+
+@media screen and (max-width: 599px) {
+    .waveform-synthesizer {
+        width: 100%;
+    }
+}
+
+canvas {
+    width: 100%;
+}
+
 .slider {
   width: 60%
 }
@@ -185,16 +199,17 @@ export default defineComponent({
     padding: 10px 20px;
     border: 1px solid #ccc;
     cursor: pointer;
+    font-size: 0.8em
 }
 .white-key {
     background-color: white;
     color: black;
-    width: 100px;
+    width: 20%;
 }
 .black-key {
     background-color: black;
     color: white;
-    width: 80px;
+    width: 16%;
 }
 .selected {
     background-color: darkcyan;
