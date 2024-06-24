@@ -176,16 +176,6 @@ export default defineComponent({
     width: 600px;
 }
 
-@media screen and (max-width: 599px) {
-    .waveform-synthesizer {
-        width: 100%;
-    }
-}
-
-canvas {
-    width: 100%;
-}
-
 .slider {
   width: 60%
 }
