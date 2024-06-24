@@ -99,7 +99,6 @@ export default defineComponent({
 
         /* 画面操作時に呼び出されるメソッド */
         // 音名のトグルボタンをクリックしたときに実行される関数
-        // 音律の切り替え時にも呼び出されるので注意すること
         const handleNoteToggleButtons = (note: string) => {
             // 選択された音名をトグル
             selectedNotesRef.value[note] = !selectedNotesRef.value[note]
@@ -108,6 +107,7 @@ export default defineComponent({
         }
 
         // リセットボタンをクリックしたときに実行される関数
+        // 音律の切り替え時にも呼び出されるので注意すること
         const handleResetButton = () => {
             // 選択された音名をリセット
             Object.keys(selectedNotesRef.value).forEach(note => {
@@ -127,7 +127,7 @@ export default defineComponent({
         /* ヘルパ関数 */
         // 白鍵判定
         const isWhiteKey = (note: string) => {
-            // Sが含まれていない音名は白鍵
+            // #が含まれていない音名は白鍵
             return !note.includes('#')
         }
 
