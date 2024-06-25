@@ -1,6 +1,6 @@
 import { ToneSystem } from './ToneSystem';
-export class JustIntonationSystem implements ToneSystem  {
-    name = 'JustIntonation'
+export class PureIntonationSystem implements ToneSystem  {
+    name = 'PureIntonation'
     tonesList = [
         { toneName: 'Do4', frequency: 261.63 },
         { toneName: 'Re4', frequency: 294.33 },

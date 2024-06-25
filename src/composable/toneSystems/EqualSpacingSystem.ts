@@ -1,6 +1,6 @@
 import { ToneSystem } from './ToneSystem'
-export class MeanToneSystem implements ToneSystem  {
-    name = 'MeanTone'
+export class EqualSpacingSystem implements ToneSystem  {
+    name = 'EqualSpacing'
     tonesList = [
         { toneName: 'Do4', frequency: 261.63 },
         { toneName: 'Do4#', frequency: 277.18 },

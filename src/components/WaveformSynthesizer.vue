@@ -4,12 +4,12 @@
         <h3>波形合成するやつ</h3>
         <!-- 音律選択のラジオボタン -->
         <div>
-            <input type="radio" id="meanTones" value="MeanTone" v-model="toneSystemNameRef">
-            <label for="meanTones">Mean Tone</label>
-            <input type="radio" id="JustIntonation" value="JustIntonation" v-model="toneSystemNameRef">
-            <label for="JustIntonation">Just Intonation</label>
-            <input type="radio" id="NaturalHarmonics" value="NaturalHarmonics" v-model="toneSystemNameRef">
-            <label for="NaturalHarmonics">Natural Harmonics</label>
+            <input type="radio" id="equalSpacing" value="EqualSpacing" v-model="toneSystemNameRef">
+            <label for="EaualSpacing">Equal Spacing</label>
+            <input type="radio" id="pureIntonation" value="PureIntonation" v-model="toneSystemNameRef">
+            <label for="PureIntonation">Pure Intonation</label>
+            <input type="radio" id="NaturalHarmonicSeries" value="NaturalHarmonicSeries" v-model="toneSystemNameRef">
+            <label for="NaturalHarmonicSeries">Natural Harmonic Series</label>
         </div>
         <!-- 音名のトグルボタン -->
         <div class="keyboard">
@@ -37,18 +37,18 @@
         </div>
         <!-- 付帯情報 -->
         <div>
-            <p>構成音の周波数: {{ chordFrequenciesRef.join(' Hz, ') }} Hz</p>
-            <p>構成音の周期: {{ chordPeriodsRef.map((it, _) => it.toFixed(2)).join(' ms, ') }} ms</p>
+            <p>構成音の周波数: {{ chordFrequenciesCmp }} </p>
+            <p>構成音の周期: {{ chordPeriodsCmp }} </p>
         </div>
     </div>
 </template>
 <script lang="ts">
-import { defineComponent, ref, onMounted, watch } from 'vue'
+import { defineComponent, ref, onMounted, watch, computed} from 'vue'
 import { Chord } from '../composable/Chord'
 import { ToneSystem } from '../composable/toneSystems/ToneSystem'
-import { MeanToneSystem } from '../composable/toneSystems/MeanToneSystem'
-import { NaturalHarmonicsSystem } from '../composable/toneSystems/NaturalHarmonicsSystem'
-import { JustIntonationSystem } from '../composable/toneSystems/JustIntonationToneSystem'
+import { EqualSpacingSystem } from '../composable/toneSystems/EqualSpacingSystem'
+import { NaturalHarmonicSeriesSystem } from '../composable/toneSystems/NaturalHarmonicSeriesSystem'
+import { PureIntonationSystem } from '../composable/toneSystems/PureIntonationToneSystem'
 import { ChartManager } from '../composable/ChartManager'
 import { ChordManager } from '../composable/ChordManager'
 import { AudioContextManager } from '../composable/AudioContextManager'
@@ -60,18 +60,21 @@ export default defineComponent({
         /* 変数宣言 */
         // 定数
         const toneSystemList: ToneSystem[] = 
-        [new MeanToneSystem(), new JustIntonationSystem(), new NaturalHarmonicsSystem()]
-        const chordManager: ChordManager = new ChordManager(new Chord([], 1)) // 初期値は適当
-
+        [new EqualSpacingSystem(), new PureIntonationSystem(), new NaturalHarmonicSeriesSystem()]
+        const chordManager: ChordManager = new ChordManager(new Chord([], 1)) // 初期値は無音
         // リファレンス
         const canvasRef = ref<HTMLCanvasElement | null>(null) // キャンバス要素のref
         const sampleCountRef = ref<number>(1000) // サンプル数のref
         const chordFrequenciesRef = ref<number[]>([]) // コード構成音の周波数リストのref
         const chordPeriodsRef = ref<number[]>([]) // コード構成音の周期リストのref
         const selectedNotesRef = ref<SelectedNotes>({}) // 選択された音名のフラグ列を管理するオブジェクトのref
-        const toneSystemNameRef = ref<string>('MeanTone') // 選択された音律のref
+        const toneSystemNameRef = ref<string>('EqualSpacing') // 選択された音律のref
         const availableNotesRef = ref<string[]>(toneSystemList[0].getToneNameList()) // 選択可能な音名のリストのref
 
+        // 表示用のcomputed()
+        const chordFrequenciesCmp = computed(() => chordFrequenciesRef.value.map((it, _) => it.toFixed(2) + ' Hz').join(', ').trim())
+        const chordPeriodsCmp = computed(() => chordPeriodsRef.value.map((it, _) => it.toFixed(2) + ' ms').join(', ').trim())
+        
         /* watch */
         // sampleCountの変更を監視
         watch(sampleCountRef, (newValue, _oldValue) => {
@@ -146,6 +149,7 @@ export default defineComponent({
             const newChord = new Chord(chordFrequenciesRef.value, 1)
             // 選択された音名に対応する周期を表示用に取得
             chordPeriodsRef.value = newChord.periods
+            // 波形データを再生成
             chordManager.updateAudioBuffer(newChord)
             // グラフを再描画
             ChartManager.drawChart(canvasRef.value, chordManager.getSoundDataForChart(sampleCountRef.value))
@@ -164,6 +168,9 @@ export default defineComponent({
             selectedNotesRef,
             toneSystemNameRef,
             availableNotesRef,
+            // コンピューテッド
+            chordFrequenciesCmp,
+            chordPeriodsCmp,
             // 画面の修飾用メソッド
             isWhiteKey,
         }

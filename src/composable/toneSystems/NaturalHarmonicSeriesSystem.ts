@@ -1,6 +1,6 @@
 import { ToneSystem } from './ToneSystem';
-export class NaturalHarmonicsSystem implements ToneSystem  {
-    name = 'NaturalHarmonics'
+export class NaturalHarmonicSeriesSystem implements ToneSystem  {
+    name = 'NaturalHarmonicSeries'
     tonesList = [
         { toneName: 'Do4', frequency: 261.63 },
         { toneName: 'Do5', frequency: 523.26 },
